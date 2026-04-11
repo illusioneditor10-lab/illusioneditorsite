@@ -372,13 +372,26 @@ function setupCropper(src) {
     const image = document.getElementById('cropperImage');
     
     modal.style.display = 'flex';
-    image.crossOrigin = "anonymous";
-    image.src = src;
     
+    // Only use anonymous CORS for external http/https links
+    if (src.startsWith('http') || src.startsWith('/api/proxy')) {
+        image.crossOrigin = "anonymous";
+    } else {
+        image.removeAttribute('crossOrigin');
+    }
+
+    // IMPORTANT: Set listeners BEFORE src
     image.onload = () => {
         if(crpInst) crpInst.destroy();
         crpInst = new Cropper(image, { aspectRatio: currentCropRatio, viewMode: 2, background: false });
     };
+
+    image.onerror = () => {
+        showToast("Access Denied: The image vault refused to release this file. Try uploading it directly.", "error");
+        closeCropper();
+    };
+
+    image.src = src;
 }
 
 window.closeCropper = () => {

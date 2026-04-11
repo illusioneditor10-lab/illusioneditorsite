@@ -328,7 +328,12 @@ forms.settings.addEventListener('submit', async (e) => {
         if (res.ok) {
             showToast('Global configurations updated.', 'success');
         } else {
-            showToast('Vault rejected settings (Error ' + res.status + ')', 'error');
+            let errorMsg = 'Vault rejected settings';
+            try {
+                const errData = await res.json();
+                if (errData.error) errorMsg = errData.error;
+            } catch(e) {}
+            showToast(`${errorMsg} (Error ${res.status})`, 'error');
             if (res.status === 401) logoutBtn.click();
         }
     } catch (err) {

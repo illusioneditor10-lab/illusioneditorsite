@@ -13,7 +13,12 @@ CORS(app)
 
 # --- ENVIRONMENT CONFIGURATION ---
 # These will be set on Render dashboard
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
+# Render provides postgres:// but SQLAlchemy requires postgresql://
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 SECRET_TOKEN = os.environ.get('SECRET_TOKEN', 'illusionmaster')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'illusionmaster')
@@ -161,10 +166,10 @@ def proxy():
 
 # Static fallback
 @app.route('/')
-def index(): return send_from_directory('.', 'index.html')
+def index(): return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/<path:path>')
-def serve_static(path): return send_from_directory('.', path)
+def serve_static(path): return send_from_directory(app.static_folder, path)
 
 if __name__ == '__main__':
     with app.app_context():

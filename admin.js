@@ -182,10 +182,16 @@ function renderPortfolio(filter = '') {
 function createItemCard(item, mini = false) {
     const div = document.createElement('div');
     div.className = 'item-card';
-    const thumbId = item.thumbnail || item.driveId;
-    const thumbUrl = thumbId.startsWith('http') || thumbId.startsWith('uploads/') 
-        ? thumbId 
-        : `https://drive.google.com/uc?export=view&id=${thumbId}`;
+    const thumbId = item.thumbnail || item.driveId || '';
+    let thumbUrl = 'https://via.placeholder.com/300x169?text=No+Media+ID';
+    
+    if (thumbId) {
+        if (thumbId.startsWith('http') || thumbId.startsWith('uploads/')) {
+            thumbUrl = thumbId;
+        } else {
+            thumbUrl = `https://drive.google.com/uc?export=view&id=${thumbId}`;
+        }
+    }
 
     div.innerHTML = `
         <div class="item-thumb">

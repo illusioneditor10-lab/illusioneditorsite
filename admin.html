@@ -1,218 +1,760 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Illusion Editor – Admin Dashboard</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-    :root {
-      --bg: #060606; --bg-card: #0c0c0c;
-      --gold: #c9a84c; --gold-dark: #9a7d35;
-      --text: #ffffff; --text-muted: #999999;
-      --border: #1a1a1a;
-      --font: 'Outfit', sans-serif;
-    }
-    body {
-      margin: 0; padding: 0; background: var(--bg); color: var(--text);
-      font-family: var(--font);
-    }
-    header {
-      padding: 1.5rem 2rem; border-bottom: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      background: var(--bg-card);
-    }
-    header h1 { margin: 0; font-size: 1.4rem; color: var(--gold); }
-    main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-    
-    .login-container {
-      max-width: 400px; margin: 100px auto; padding: 2rem;
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-      text-align: center;
-    }
-    .login-container input {
-      width: 100%; padding: 0.8rem; margin: 1rem 0; box-sizing: border-box;
-      background: #000; border: 1px solid #333; color: #fff; border-radius: 6px;
-    }
-    .btn {
-      background: var(--gold); color: #000; border: none; padding: 0.8rem 1.5rem;
-      border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s;
-    }
-    .btn:hover { background: #dfbc55; }
-    .btn.danger { background: #e94560; color: #fff; }
-    
-    #dashboard { display: none; }
-    
-    .panel-group { display: flex; gap: 2rem; }
-    .side-form { flex: 1; background: var(--bg-card); padding: 2rem; border: 1px solid var(--border); border-radius: 12px; }
-    .list-view { flex: 2; }
-    
-    .form-group { margin-bottom: 1rem; text-align: left; }
-    .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-    .form-group input, .form-group select {
-      width: 100%; padding: 0.7rem; box-sizing: border-box;
-      background: #000; border: 1px solid #333; color: #fff; border-radius: 6px;
-    }
-    
-    .item-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      padding: 1rem; border-radius: 8px; margin-bottom: 1rem;
-      display: flex; gap: 1rem; align-items: center;
-    }
-    .item-card img { width: 120px; height: 70px; object-fit: cover; border-radius: 4px; }
-    .item-card-info { flex: 1; }
-    .item-card-info h3 { margin: 0 0 0.3rem 0; font-size: 1.1rem; }
-    .item-card-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
-    .item-actions { display: flex; gap: 0.5rem; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Illusion Admin – Premium Dashboard</title>
+    <!-- Modern Dependencies -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg: #050505;
+            --bg-accent: #0f0f0f;
+            --bg-card: #151515;
+            --gold: #c9a84c;
+            --gold-light: #dfbc55;
+            --gold-dark: #9a7e35;
+            --text: #ffffff;
+            --text-muted: #888888;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-gold: rgba(201, 168, 76, 0.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --font: 'Outfit', sans-serif;
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* ── Login View ─────────────────────────────────────────── */
+        #loginView {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #111 0%, #050505 100%);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 3rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .login-card h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to bottom, #fff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* ── Dashboard Layout ────────────────────────────────────── */
+        #dashboard {
+            display: none;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        aside {
+            width: 280px;
+            background: var(--bg-accent);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 3rem;
+            padding-left: 0.5rem;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 800;
+        }
+
+        .brand h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-link i { font-size: 1.1rem; width: 24px; text-align: center; }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--gold);
+            background: var(--border-gold);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2.5rem 3.5rem;
+            max-width: 1400px;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.85rem;
+            font-weight: 700;
+        }
+
+        /* ── Components ─────────────────────────────────────────── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--gold);
+        }
+
+        .stat-info h4 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2px; }
+        .stat-info p { font-size: 1.5rem; font-weight: 700; }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group.full { grid-column: span 2; }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.9rem 1.1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.1);
+        }
+
+        .input-with-button {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.9rem 1.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 168, 76, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-danger {
+            background: #e945601a;
+            color: #e94560;
+            border: 1px solid #e9456033;
+        }
+
+        .btn-danger:hover {
+            background: #e94560;
+            color: #fff;
+        }
+
+        .btn-icon {
+            padding: 0.6rem;
+            width: 38px;
+            height: 38px;
+        }
+
+        /* Portfolio List */
+        .search-bar {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-bar input {
+            padding-left: 3rem;
+            background: var(--bg-accent);
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .item-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .item-card:hover {
+            border-color: var(--border-gold);
+            transform: scale(1.005);
+        }
+
+        .item-thumb {
+            width: 140px;
+            height: 80px;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--gold);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .item-info { flex: 1; }
+        .item-info h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 4px; }
+        .item-info p { font-size: 0.85rem; color: var(--text-muted); }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* ── Toasts ─────────────────────────────────────────────── */
+        #toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+            animation: slideIn 0.3s ease-out;
+            min-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            aside { width: 80px; padding: 2rem 0.75rem; }
+            .brand h1, .nav-link span { display: none; }
+            .brand { justify-content: center; padding: 0; }
+            main { margin-left: 80px; padding: 2rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: auto; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div class="login-container" id="loginView">
-    <h2 style="margin-top:0">Admin Access</h2>
-    <p style="color:var(--text-muted);font-size:0.9rem">Enter the master password to manage your portfolio.</p>
-    <input type="password" id="adminPassword" placeholder="Master Password" />
-    <button class="btn" id="loginBtn" style="width:100%">Enter</button>
-    <p id="loginError" style="color:#e94560;font-size:0.8rem;display:none;">Invalid password</p>
-  </div>
+    <!-- ── TOAST CONTAINER ── -->
+    <div id="toast-container"></div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard">
-    <header>
-      <h1>Illusion Editor Admin</h1>
-      <div>
-        <button class="btn" id="logoutBtn" style="padding:0.4rem 1rem;font-size:0.8rem">Logout</button>
-      </div>
-    </header>
-
-    <main>
-      <div class="panel-group">
-        
-        <!-- Add/Edit Form -->
-        <div class="side-form">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h2 id="formTitle" style="margin-top:0">Add New Video</h2>
-            <button type="button" id="addNewBtn" class="btn" style="padding:0.4rem 0.8rem;font-size:0.8rem;background:#333;color:#fff;">➕ Clear / New</button>
-          </div>
-          <form id="portfolioForm">
-            <input type="hidden" id="itemId" />
-            
-            <div class="form-group">
-              <label>Title</label>
-              <input type="text" id="title" required placeholder="e.g. Cinematic Destination Wedding" />
-            </div>
-            
-            <div class="form-group">
-              <label>Google Drive ID (or YouTube ID)</label>
-              <input type="text" id="driveId" required placeholder="e.g. 1QgvRHmRs5Shv8..." />
-            </div>
-            
-            <div class="form-group">
-              <label>Thumbnail ID or Local Path</label>
-              <div style="display:flex;gap:10px">
-                <input type="text" id="thumbnail" placeholder="Optional" style="flex:1" />
-                <button type="button" class="btn btn-crop" onclick="openCropper('thumbnail', 16/9)">Crop</button>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label>Description</label>
-              <input type="text" id="desc" placeholder="e.g. Single Day · 2024" />
-            </div>
-            
-            <div class="form-group">
-              <label>Category</label>
-              <select id="category" required>
-                <option value="wedding">Wedding</option>
-                <option value="commercial">Commercial</option>
-                <option value="model">Model</option>
-                <option value="event">Event</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>Wedding Sub-category</label>
-              <select id="subcategory">
-                <option value="">None</option>
-                <option value="highlight">Highlight</option>
-                <option value="destination">Destination</option>
-                <option value="prewedding">Pre-Wedding</option>
-                <option value="engagement">Engagement</option>
-                <option value="teaser">Teaser</option>
-                <option value="sangeet">Sangeet / Haldi</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>Grid Size</label>
-              <select id="size">
-                <option value="normal">Normal (1x1)</option>
-                <option value="wide">Wide (2x columns)</option>
-                <option value="tall">Tall (2x rows)</option>
-              </select>
-            </div>
-            
-            <button type="submit" class="btn" style="width:100%" id="saveBtn">Save Video</button>
-            <button type="button" class="btn" style="width:100%;margin-top:0.5rem;background:#333;color:#fff;" id="cancelBtn" hidden>Cancel Edit</button>
-          </form>
-          
-          <hr style="border-top: 1px solid var(--border); border-bottom: none; border-left: none; border-right: none; margin: 2rem 0;">
-          
-          <h2 style="margin-top:0">Global Settings</h2>
-          <form id="settingsForm">
-             <div class="form-group">
-                <label>Background Music URL or Path</label>
-                <input type="text" id="bgMusicUrl" placeholder="e.g. ambient.wav or https://..." />
-             </div>
-             <div class="form-group">
-                <label>Hero Section Background Image Link (Local or Google Drive URL)</label>
-                <div style="display:flex;gap:10px">
-                   <input type="text" id="heroPhotoUrl" placeholder="e.g. hero-bg.jpg or https://drive.google.com/..." style="flex:1" />
-                   <button type="button" class="btn btn-crop" onclick="openCropper('heroPhotoUrl', 16/9)">Crop</button>
+    <!-- ── LOGIN VIEW ── -->
+    <section id="loginView">
+        <div class="login-card">
+            <h2>Illusion Master</h2>
+            <p>Vault Access – Admin Credentials Required</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="password" id="adminPassword" placeholder="Master Password" required autocomplete="current-password">
                 </div>
-             </div>
-             <div class="form-group">
-                <label>About Section Profile Image (Local or Google Drive URL)</label>
-                <div style="display:flex;gap:10px">
-                   <input type="text" id="aboutPhotoUrl" placeholder="e.g. about_mihir.png or https://drive.google.com/..." style="flex:1" />
-                   <button type="button" class="btn btn-crop" onclick="openCropper('aboutPhotoUrl', 4/5)">Crop</button>
+                <button type="submit" class="btn btn-primary" style="width:100%" id="loginBtn">Verify Access</button>
+            </form>
+            <p id="loginError" style="color:#e94560; margin-top:1.5rem; display:none;">Access Denied. Incorrect signature.</p>
+        </div>
+    </section>
+
+    <!-- ── DASHBOARD VIEW ── -->
+    <div id="dashboard">
+        <aside>
+            <div class="brand">
+                <div class="brand-logo">I</div>
+                <h1>ILLUSION</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a class="nav-link active" data-view="overview">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-view="portfolio">
+                        <i class="fa-solid fa-film"></i>
+                        <span>Portfolio</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-view="settings">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Global Settings</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a class="nav-link" id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <main>
+            <!-- ── OVERVIEW SECTION ── -->
+            <section id="overviewSection" class="view-section active">
+                <div class="section-header">
+                    <h2>Dashboard Overview</h2>
                 </div>
-             </div>
-             <button type="submit" class="btn" style="width:100%">Save Settings</button>
-             <p id="settingsFeedback" style="color:var(--gold);font-size:0.8rem;display:none;margin-top:0.5rem">Settings Saved!</p>
-          </form>
-        </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-video"></i></div>
+                        <div class="stat-info">
+                            <h4>Total Videos</h4>
+                            <p id="stat-total-videos">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
+                        <div class="stat-info">
+                            <h4>Weddings</h4>
+                            <p id="stat-wedding-count">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-briefcase"></i></div>
+                        <div class="stat-info">
+                            <h4>Commercial</h4>
+                            <p id="stat-commercial-count">0</p>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- List View -->
-        <div class="list-view">
-          <h2 style="margin-top:0">Current Portfolio</h2>
-          <div id="itemList">
-            <p style="color:var(--text-muted)">Loading...</p>
-          </div>
-        </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 1.5rem">Recent Submissions</h3>
+                    <div id="recent-items-list" class="item-list">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </section>
 
-      </div>
-    </main>
-  </div>
+            <!-- ── PORTFOLIO SECTION ── -->
+            <section id="portfolioSection" class="view-section">
+                <div class="section-header">
+                    <h2>Portfolio Management</h2>
+                    <button class="btn btn-primary" id="addVideoBtn">
+                        <i class="fa-solid fa-plus"></i> New Video
+                    </button>
+                </div>
 
-  <input type="file" id="globalImageUploader" accept="image/*" style="display:none" />
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="portfolioSearch" placeholder="Search by title, category or description...">
+                </div>
 
-  <!-- Cropper Modal -->
-  <div id="cropperModal" class="modal-overlay" style="display:none">
-    <div class="cropper-container" style="background:#111; padding:2rem; border-radius:12px; width:90%; max-width:800px; border:1px solid var(--border-gold)">
-      <h2 style="margin-top:0">Crop Image</h2>
-      <div style="width:100%; max-height:60vh; background:#000; overflow:hidden; border-radius:8px; margin-bottom:1rem">
-        <img id="cropperImage" style="display:block; max-width:100%;" />
-      </div>
-      <div style="display:flex; gap:10px; justify-content:flex-end">
-        <button type="button" class="btn" style="background:#333; color:#fff" onclick="closeCropper()">Cancel</button>
-        <button type="button" class="btn" id="saveCropBtn">Save Crop & Upload</button>
-      </div>
+                <div id="full-portfolio-list" class="item-list">
+                    <!-- Filled by JS -->
+                </div>
+            </section>
+
+            <!-- ── SETTINGS SECTION ── -->
+            <section id="settingsSection" class="view-section">
+                <div class="section-header">
+                    <h2>Global Settings</h2>
+                </div>
+
+                <div class="card">
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label>Ambient Background Music</label>
+                            <input type="text" id="bgMusicUrl" placeholder="File name (ambient.wav) or full URL">
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Hero Background Image</label>
+                                <div class="input-with-button">
+                                    <input type="text" id="heroPhotoUrl" placeholder="Image URL or Drive ID">
+                                    <button type="button" class="btn btn-secondary btn-icon" onclick="openCropper('heroPhotoUrl', 16/9)">
+                                        <i class="fa-solid fa-crop"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>About Section Profile</label>
+                                <div class="input-with-button">
+                                    <input type="text" id="aboutPhotoUrl" placeholder="Image URL or Drive ID">
+                                    <button type="button" class="btn btn-secondary btn-icon" onclick="openCropper('aboutPhotoUrl', 4/5)">
+                                        <i class="fa-solid fa-crop"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 2rem">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Global Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
     </div>
-  </div>
 
-  <script src="admin.js"></script>
+    <!-- ── VIDEO EDITOR MODAL ── -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalFormTitle">Add New Video</h3>
+                <button class="btn btn-secondary btn-icon" id="closeVideoModal" style="background:none"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="portfolioForm">
+                    <input type="hidden" id="itemId">
+                    
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label>Video Title</label>
+                            <input type="text" id="title" required placeholder="Cinematic Wedding in Rajasthan">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Drive File ID</label>
+                            <input type="text" id="driveId" required placeholder="1QgvRHmRs5Shv8...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Thumbnail ID</label>
+                            <div class="input-with-button">
+                                <input type="text" id="thumbnail" placeholder="Auto-uses Drive ID if empty">
+                                <button type="button" class="btn btn-secondary btn-icon" onclick="openCropper('thumbnail', 16/9)">
+                                    <i class="fa-solid fa-crop"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="category" required>
+                                <option value="wedding">Wedding</option>
+                                <option value="commercial">Commercial</option>
+                                <option value="model">Model</option>
+                                <option value="event">Event</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="subcategory-wrap">
+                            <label>Wedding Sub-category</label>
+                            <select id="subcategory">
+                                <option value="">None / General</option>
+                                <option value="highlight">Highlight</option>
+                                <option value="destination">Destination</option>
+                                <option value="prewedding">Pre-Wedding</option>
+                                <option value="engagement">Engagement</option>
+                                <option value="teaser">Teaser</option>
+                                <option value="sangeet">Sangeet / Haldi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Grid Appearance</label>
+                            <select id="size">
+                                <option value="normal">Standard (Square)</option>
+                                <option value="wide">Wide (Banner)</option>
+                                <option value="tall">Tall (Portrait)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Short Description / Tags</label>
+                            <input type="text" id="desc" placeholder="e.g. Udaipur · 2024">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('videoModal')">Cancel</button>
+                <button type="submit" form="portfolioForm" class="btn btn-primary" id="saveBtn">Publish Video</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── CROPPER MODAL ── -->
+    <div id="cropperModal" class="modal">
+        <div class="modal-content" style="max-width: 800px">
+            <div class="modal-header">
+                <h3>Refine Media</h3>
+                <button class="btn btn-secondary btn-icon" onclick="closeCropper()" style="background:none"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="background:#000">
+                <div style="width:100%; height: 50vh; overflow:hidden">
+                    <img id="cropperImage" style="display:block; max-width:100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeCropper()">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveCropBtn">
+                    <i class="fa-solid fa-upload"></i> Save & Upload
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Uploader -->
+    <input type="file" id="globalImageUploader" accept="image/*" style="display:none">
+
+    <script src="admin.js"></script>
 </body>
 </html>

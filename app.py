@@ -161,8 +161,10 @@ def proxy():
     url = request.args.get('url')
     if not url: return "Missing URL", 400
     try:
-        resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, stream=True)
-        return Response(resp.content, content_type=resp.headers.get('Content-Type'))
+        resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, stream=True, timeout=10)
+        flask_resp = Response(resp.content, content_type=resp.headers.get('Content-Type'))
+        flask_resp.headers['Access-Control-Allow-Origin'] = '*'
+        return flask_resp
     except Exception as e:
         return str(e), 500
 

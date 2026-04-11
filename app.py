@@ -133,13 +133,24 @@ def handle_settings():
         return jsonify(get_all_settings()), 200
     
     if not check_auth(): return jsonify({"error": "Unauthorized"}), 401
-    d = request.json
-    for k, v in d.items():
-        s = Setting.query.get(k)
-        if s: s.value = str(v)
-        else: db.session.add(Setting(key=k, value=str(v)))
-    db.session.commit()
-    return jsonify({"message": "Settings updated"}), 200
+    
+    data = request.json
+    if not data: return jsonify({"error": "No data received"}), 400
+    
+    try:
+        for k, v in data.items():
+            # Use SQLAlchemy 2.0 compatible session.get()
+            s = db.session.get(Setting, k)
+            if s:
+                s.value = str(v)
+            else:
+                db.session.add(Setting(key=k, value=str(v)))
+        db.session.commit()
+        return jsonify({"message": "Settings updated"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"ERROR: Settings save failed: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/upload', methods=['POST'])
 def upload():

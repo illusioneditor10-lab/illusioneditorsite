@@ -138,8 +138,9 @@ async function loadData() {
             portfolioData = await res.json();
             renderPortfolio();
             updateStats();
-        } else if (res.status === 401) {
-            logoutBtn.click();
+        } else {
+            showToast('Vault refused to reveal memories (Error ' + res.status + ')', 'error');
+            if (res.status === 401) logoutBtn.click();
         }
 
         // Load Settings
@@ -186,11 +187,9 @@ function createItemCard(item, mini = false) {
     let thumbUrl = 'https://via.placeholder.com/300x169?text=No+Media+ID';
     
     if (thumbId) {
-        if (thumbId.startsWith('http') || thumbId.startsWith('uploads/')) {
-            thumbUrl = thumbId;
-        } else {
-            thumbUrl = `https://drive.google.com/uc?export=view&id=${thumbId}`;
-        }
+        thumbUrl = (thumbId.startsWith('http') || thumbId.startsWith('uploads/')) 
+            ? thumbId 
+            : `https://drive.google.com/uc?export=view&id=${thumbId}`;
     }
 
     div.innerHTML = `

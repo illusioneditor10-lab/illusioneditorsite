@@ -80,8 +80,8 @@ def get_portfolio():
     for i in items:
         output.append({
             "id": i.id, "title": i.title, "category": i.category,
-            "subCategory": i.subCategory, "thumbnail": i.thumbnail,
-            "driveId": i.driveId, "description": i.description, "date": i.date,
+            "subcategory": i.subCategory, "thumbnail": i.thumbnail,
+            "driveId": i.driveId, "desc": i.description, "date": i.date,
             "size": i.size
         })
     return jsonify(output), 200
@@ -176,145 +176,11 @@ def serve_static(path): return send_from_directory(app.static_folder, path)
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(port=8000, debug=True)
-class PortfolioItem(db.Model):
-    id = db.Column(db.String(50), primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    category = db.Column(db.String(50))
-    subCategory = db.Column(db.String(50))
-    thumbnail = db.Column(db.Text)
-    videoUrl = db.Column(db.Text)
-    ytId = db.Column(db.String(50))
-    driveId = db.Column(db.String(100))
-    description = db.Column(db.Text)
-    date = db.Column(db.String(50))
-
-class Setting(db.Model):
-    key = db.Column(db.String(50), primary_key=True)
-    value = db.Column(db.Text)
-
-# --- HELPERS ---
-
-def check_auth():
-    auth = request.headers.get('Authorization')
-    return auth == f"Bearer {SECRET_TOKEN}"
-
-def get_all_settings():
-    settings = Setting.query.all()
-    res = {"bgMusic": "ambient.wav"}
-    for s in settings:
-        res[s.key] = s.value
-    return res
-
-# --- API ROUTES ---
-
-@app.route('/api/login', methods=['POST'])
-def login():
-    data = request.json
-    if data.get('password') == ADMIN_PASSWORD:
-        return jsonify({"token": SECRET_TOKEN}), 200
-    return jsonify({"error": "Invalid password"}), 401
-
-@app.route('/api/portfolio', methods=['GET'])
-def get_portfolio():
-    items = PortfolioItem.query.all()
-    output = []
-    for i in items:
-        output.append({
-            "id": i.id, "title": i.title, "category": i.category,
-            "subCategory": i.subCategory, "thumbnail": i.thumbnail,
-            "videoUrl": i.videoUrl, "ytId": i.ytId, "driveId": i.driveId,
-            "description": i.description, "date": i.date
-        })
-    return jsonify(output), 200
-
-@app.route('/api/portfolio', methods=['POST'])
-def add_portfolio():
-    if not check_auth(): return jsonify({"error": "Unauthorized"}), 401
-    d = request.json
-    item_id = d.get('id') or str(uuid.uuid4())
-    item = PortfolioItem(
-        id=item_id, title=d.get('title'), category=d.get('category'),
-        subCategory=d.get('subCategory'), thumbnail=d.get('thumbnail'),
-        videoUrl=d.get('videoUrl'), ytId=d.get('ytId'), driveId=d.get('driveId'),
-        description=d.get('description'), date=d.get('date')
-    )
-    db.session.add(item)
-    db.session.commit()
-    return jsonify({"message": "Created", "id": item_id}), 201
-
-@app.route('/api/portfolio/<item_id>', methods=['PUT', 'DELETE'])
-def handle_portfolio_item(item_id):
-    if not check_auth(): return jsonify({"error": "Unauthorized"}), 401
-    item = PortfolioItem.query.get(item_id)
-    if not item: return jsonify({"error": "Not found"}), 404
-    
-    if request.method == 'DELETE':
-        db.session.delete(item)
-        db.session.commit()
-        return jsonify({"message": "Deleted"}), 200
-    
-    # PUT
-    d = request.json
-    item.title = d.get('title', item.title)
-    item.category = d.get('category', item.category)
-    item.subCategory = d.get('subCategory', item.subCategory)
-    item.thumbnail = d.get('thumbnail', item.thumbnail)
-    item.videoUrl = d.get('videoUrl', item.videoUrl)
-    item.ytId = d.get('ytId', item.ytId)
-    item.driveId = d.get('driveId', item.driveId)
-    item.description = d.get('description', item.description)
-    item.date = d.get('date', item.date)
-    db.session.commit()
-    return jsonify({"message": "Updated"}), 200
-
-@app.route('/api/settings', methods=['GET', 'POST'])
-def handle_settings():
-    if request.method == 'GET':
-        return jsonify(get_all_settings()), 200
-    
-    if not check_auth(): return jsonify({"error": "Unauthorized"}), 401
-    d = request.json
-    for k, v in d.items():
-        s = Setting.query.get(k)
-        if s: s.value = str(v)
-        else: db.session.add(Setting(key=k, value=str(v)))
-    db.session.commit()
-    return jsonify({"message": "Settings updated"}), 200
-
-@app.route('/api/upload', methods=['POST'])
-def upload():
-    if not check_auth(): return jsonify({"error": "Unauthorized"}), 401
-    try:
-        payload = request.json
-        img_data = payload.get('image_data_base64')
-        if not img_data: return jsonify({"error": "No data"}), 400
-        
-        # Upload to Cloudinary
-        # This works with both base64 and URLs
-        result = cloudinary.uploader.upload(img_data, folder="portfolio")
-        return jsonify({"message": "Uploaded", "url": result.get('secure_url')}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-@app.route('/api/proxy')
-def proxy():
-    url = request.args.get('url')
-    if not url: return "Missing URL", 400
-    try:
-        resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, stream=True)
-        return Response(resp.content, content_type=resp.headers.get('Content-Type'))
-    except Exception as e:
-        return str(e), 500
-
-# Static fallback
-@app.route('/')
-def index(): return send_from_directory(app.static_folder, 'index.html')
-
-@app.route('/<path:path>')
-def serve_static(path): return send_from_directory(app.static_folder, path)
-
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+        # Simple migration for 'size' column if it doesn't exist
+        try:
+            from sqlalchemy import text
+            db.session.execute(text('ALTER TABLE portfolio_item ADD COLUMN size VARCHAR(20) DEFAULT \'normal\''))
+            db.session.commit()
+        except:
+            db.session.rollback()
     app.run(port=8000, debug=True)

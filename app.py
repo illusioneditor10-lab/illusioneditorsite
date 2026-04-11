@@ -2,7 +2,7 @@ import os
 import uuid
 import base64
 import requests
-from flask import Flask, json, request, Response, jsonify
+from flask import Flask, json, request, Response, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import cloudinary

@@ -48,8 +48,9 @@ class PortfolioItem(db.Model):
     size = db.Column(db.String(20), default='normal')
 
 class Setting(db.Model):
-    key = db.Column(db.String(50), primary_key=True)
-    value = db.Column(db.Text)
+    __tablename__ = 'site_settings'
+    s_key = db.Column(db.String(50), primary_key=True)
+    s_value = db.Column(db.Text)
 
 # --- HELPERS ---
 
@@ -61,7 +62,7 @@ def get_all_settings():
     settings = Setting.query.all()
     res = {"bgMusic": "ambient.wav"}
     for s in settings:
-        res[s.key] = s.value
+        res[s.s_key] = s.s_value
     return res
 
 # --- API ROUTES ---
@@ -139,12 +140,11 @@ def handle_settings():
     
     try:
         for k, v in data.items():
-            # Use SQLAlchemy 2.0 compatible session.get()
             s = db.session.get(Setting, k)
             if s:
-                s.value = str(v)
+                s.s_value = str(v)
             else:
-                db.session.add(Setting(key=k, value=str(v)))
+                db.session.add(Setting(s_key=k, s_value=str(v)))
         db.session.commit()
         return jsonify({"message": "Settings updated"}), 200
     except Exception as e:

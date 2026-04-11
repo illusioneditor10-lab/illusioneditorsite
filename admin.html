@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Illusion Editor – Admin Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+    :root {
+      --bg: #060606; --bg-card: #0c0c0c;
+      --gold: #c9a84c; --gold-dark: #9a7d35;
+      --text: #ffffff; --text-muted: #999999;
+      --border: #1a1a1a;
+      --font: 'Outfit', sans-serif;
+    }
+    body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      font-family: var(--font);
+    }
+    header {
+      padding: 1.5rem 2rem; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--bg-card);
+    }
+    header h1 { margin: 0; font-size: 1.4rem; color: var(--gold); }
+    main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+    
+    .login-container {
+      max-width: 400px; margin: 100px auto; padding: 2rem;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      text-align: center;
+    }
+    .login-container input {
+      width: 100%; padding: 0.8rem; margin: 1rem 0; box-sizing: border-box;
+      background: #000; border: 1px solid #333; color: #fff; border-radius: 6px;
+    }
+    .btn {
+      background: var(--gold); color: #000; border: none; padding: 0.8rem 1.5rem;
+      border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s;
+    }
+    .btn:hover { background: #dfbc55; }
+    .btn.danger { background: #e94560; color: #fff; }
+    
+    #dashboard { display: none; }
+    
+    .panel-group { display: flex; gap: 2rem; }
+    .side-form { flex: 1; background: var(--bg-card); padding: 2rem; border: 1px solid var(--border); border-radius: 12px; }
+    .list-view { flex: 2; }
+    
+    .form-group { margin-bottom: 1rem; text-align: left; }
+    .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 0.7rem; box-sizing: border-box;
+      background: #000; border: 1px solid #333; color: #fff; border-radius: 6px;
+    }
+    
+    .item-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 1rem; border-radius: 8px; margin-bottom: 1rem;
+      display: flex; gap: 1rem; align-items: center;
+    }
+    .item-card img { width: 120px; height: 70px; object-fit: cover; border-radius: 4px; }
+    .item-card-info { flex: 1; }
+    .item-card-info h3 { margin: 0 0 0.3rem 0; font-size: 1.1rem; }
+    .item-card-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+    .item-actions { display: flex; gap: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="login-container" id="loginView">
+    <h2 style="margin-top:0">Admin Access</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem">Enter the master password to manage your portfolio.</p>
+    <input type="password" id="adminPassword" placeholder="Master Password" />
+    <button class="btn" id="loginBtn" style="width:100%">Enter</button>
+    <p id="loginError" style="color:#e94560;font-size:0.8rem;display:none;">Invalid password</p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <header>
+      <h1>Illusion Editor Admin</h1>
+      <div>
+        <button class="btn" id="logoutBtn" style="padding:0.4rem 1rem;font-size:0.8rem">Logout</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="panel-group">
+        
+        <!-- Add/Edit Form -->
+        <div class="side-form">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2 id="formTitle" style="margin-top:0">Add New Video</h2>
+            <button type="button" id="addNewBtn" class="btn" style="padding:0.4rem 0.8rem;font-size:0.8rem;background:#333;color:#fff;">➕ Clear / New</button>
+          </div>
+          <form id="portfolioForm">
+            <input type="hidden" id="itemId" />
+            
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="title" required placeholder="e.g. Cinematic Destination Wedding" />
+            </div>
+            
+            <div class="form-group">
+              <label>Google Drive ID (or YouTube ID)</label>
+              <input type="text" id="driveId" required placeholder="e.g. 1QgvRHmRs5Shv8..." />
+            </div>
+            
+            <div class="form-group">
+              <label>Thumbnail ID or Local Path</label>
+              <div style="display:flex;gap:10px">
+                <input type="text" id="thumbnail" placeholder="Optional" style="flex:1" />
+                <button type="button" class="btn btn-crop" onclick="openCropper('thumbnail', 16/9)">Crop</button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" id="desc" placeholder="e.g. Single Day · 2024" />
+            </div>
+            
+            <div class="form-group">
+              <label>Category</label>
+              <select id="category" required>
+                <option value="wedding">Wedding</option>
+                <option value="commercial">Commercial</option>
+                <option value="model">Model</option>
+                <option value="event">Event</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Wedding Sub-category</label>
+              <select id="subcategory">
+                <option value="">None</option>
+                <option value="highlight">Highlight</option>
+                <option value="destination">Destination</option>
+                <option value="prewedding">Pre-Wedding</option>
+                <option value="engagement">Engagement</option>
+                <option value="teaser">Teaser</option>
+                <option value="sangeet">Sangeet / Haldi</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Grid Size</label>
+              <select id="size">
+                <option value="normal">Normal (1x1)</option>
+                <option value="wide">Wide (2x columns)</option>
+                <option value="tall">Tall (2x rows)</option>
+              </select>
+            </div>
+            
+            <button type="submit" class="btn" style="width:100%" id="saveBtn">Save Video</button>
+            <button type="button" class="btn" style="width:100%;margin-top:0.5rem;background:#333;color:#fff;" id="cancelBtn" hidden>Cancel Edit</button>
+          </form>
+          
+          <hr style="border-top: 1px solid var(--border); border-bottom: none; border-left: none; border-right: none; margin: 2rem 0;">
+          
+          <h2 style="margin-top:0">Global Settings</h2>
+          <form id="settingsForm">
+             <div class="form-group">
+                <label>Background Music URL or Path</label>
+                <input type="text" id="bgMusicUrl" placeholder="e.g. ambient.wav or https://..." />
+             </div>
+             <div class="form-group">
+                <label>Hero Section Background Image Link (Local or Google Drive URL)</label>
+                <div style="display:flex;gap:10px">
+                   <input type="text" id="heroPhotoUrl" placeholder="e.g. hero-bg.jpg or https://drive.google.com/..." style="flex:1" />
+                   <button type="button" class="btn btn-crop" onclick="openCropper('heroPhotoUrl', 16/9)">Crop</button>
+                </div>
+             </div>
+             <div class="form-group">
+                <label>About Section Profile Image (Local or Google Drive URL)</label>
+                <div style="display:flex;gap:10px">
+                   <input type="text" id="aboutPhotoUrl" placeholder="e.g. about_mihir.png or https://drive.google.com/..." style="flex:1" />
+                   <button type="button" class="btn btn-crop" onclick="openCropper('aboutPhotoUrl', 4/5)">Crop</button>
+                </div>
+             </div>
+             <button type="submit" class="btn" style="width:100%">Save Settings</button>
+             <p id="settingsFeedback" style="color:var(--gold);font-size:0.8rem;display:none;margin-top:0.5rem">Settings Saved!</p>
+          </form>
+        </div>
+
+        <!-- List View -->
+        <div class="list-view">
+          <h2 style="margin-top:0">Current Portfolio</h2>
+          <div id="itemList">
+            <p style="color:var(--text-muted)">Loading...</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <input type="file" id="globalImageUploader" accept="image/*" style="display:none" />
+
+  <!-- Cropper Modal -->
+  <div id="cropperModal" class="modal-overlay" style="display:none">
+    <div class="cropper-container" style="background:#111; padding:2rem; border-radius:12px; width:90%; max-width:800px; border:1px solid var(--border-gold)">
+      <h2 style="margin-top:0">Crop Image</h2>
+      <div style="width:100%; max-height:60vh; background:#000; overflow:hidden; border-radius:8px; margin-bottom:1rem">
+        <img id="cropperImage" style="display:block; max-width:100%;" />
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end">
+        <button type="button" class="btn" style="background:#333; color:#fff" onclick="closeCropper()">Cancel</button>
+        <button type="button" class="btn" id="saveCropBtn">Save Crop & Upload</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

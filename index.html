@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illusion Editor – Mihir Parab | Cinematic Wedding & Commercial Video Editing</title>
+  <meta name="description" content="Illusion Editor by Mihir Parab – Turning Moments into Cinematic Illusions. Premium wedding films, commercial reels, model edits and event coverage." />
+  <meta name="keywords" content="Illusion Editor, Mihir Parab, wedding video editor, cinematic wedding films, commercial reels, model reels, video editing India" />
+  <meta property="og:title" content="Illusion Editor – Mihir Parab" />
+  <meta property="og:description" content="Turning Moments into Cinematic Illusions. Premium video editing for weddings, commercials, models & events." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="theme-color" content="#c9a84c" />
+  <meta name="author" content="Mihir Parab – Illusion Editor" />
+  <meta property="og:image" content="logo.png" />
+</head>
+<body>
+  <noscript>
+    <div style="background:#060606;color:#c9a84c;text-align:center;padding:2rem;font-family:Georgia,serif;">
+      Illusion Editor — Please enable JavaScript to experience this portfolio in full cinematic quality.
+    </div>
+  </noscript>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Custom Cursor -->
+  <div id="cursor-glow" aria-hidden="true"></div>
+  <div id="cursor-dot" aria-hidden="true">
+    <div id="cursor-text" aria-hidden="true">PLAY</div>
+  </div>
+  <!-- Cursor Trail Dots -->
+  <div class="c-trail" id="ct0" aria-hidden="true"></div>
+  <div class="c-trail" id="ct1" aria-hidden="true"></div>
+  <div class="c-trail" id="ct2" aria-hidden="true"></div>
+  <div class="c-trail" id="ct3" aria-hidden="true"></div>
+  <div class="c-trail" id="ct4" aria-hidden="true"></div>
+  <div class="c-trail" id="ct5" aria-hidden="true"></div>
+
+  <!-- Particle Canvas -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- Film Grain Overlay -->
+  <div id="film-grain" aria-hidden="true"></div>
+
+  <!-- Global Animated Blobs -->
+  <div class="global-blobs" aria-hidden="true">
+    <div class="gblob gblob-1"></div>
+    <div class="gblob gblob-2"></div>
+    <div class="gblob gblob-3"></div>
+    <div class="gblob gblob-4"></div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loader" role="progressbar" aria-label="Loading">
+    <div class="loader-inner">
+      <img src="logo.png" alt="Illusion Editor Minimalist Logo" class="loader-logo-img pulse-anim" />
+      <div class="loader-tagline">Crafting Cinematic Illusions</div>
+      <div class="loader-percent" id="loader-percent">0%</div>
+      <div class="loader-bar-wrap"><div class="loader-bar" id="loader-bar"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────────── -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <a href="#hero" class="nav-logo" id="nav-logo-link">
+      <img src="logo.png" alt="Illusion Editor Logo" class="nav-logo-img">
+    </a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="#showreel" class="nav-link">Showreel</a></li>
+      <li><a href="#services" class="nav-link">Services</a></li>
+      <li><a href="#process" class="nav-link">Process</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+      <li><a href="#testimonials" class="nav-link">Clients</a></li>
+      <li><a href="#contact" class="nav-link nav-cta magnetic-btn">Let's Talk</a></li>
+    </ul>
+  </nav>
+
+  <!-- Section Progress Indicator -->
+  <div id="section-indicator" aria-hidden="true">
+    <a href="#hero"         class="sec-dot active" data-label="Home"       title="Home"></a>
+    <a href="#showreel"     class="sec-dot"         data-label="Showreel"   title="Showreel"></a>
+    <a href="#services"     class="sec-dot"         data-label="Services"   title="Services"></a>
+    <a href="#process"      class="sec-dot"         data-label="Process"    title="Process"></a>
+    <a href="#about"        class="sec-dot"         data-label="About"      title="About"></a>
+    <a href="#portfolio"    class="sec-dot"         data-label="Portfolio"  title="Portfolio"></a>
+    <a href="#testimonials" class="sec-dot"         data-label="Clients"    title="Clients"></a>
+    <a href="#contact"      class="sec-dot"         data-label="Contact"    title="Contact"></a>
+  </div>
+
+  <!-- Music Toggle -->
+  <button id="music-toggle" aria-label="Toggle background music" title="Toggle ambient music">
+    <svg id="music-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    <svg id="music-icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v9"/><path d="M15 6.17V16"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+  </button>
+  <audio id="bg-music" loop preload="none">
+    <source src="ambient.wav" type="audio/wav" />
+  </audio>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!--  VIDEO MODAL – supports YouTube & Google Drive                -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="video-modal" id="video-modal" role="dialog" aria-modal="true" aria-label="Video player" hidden>
+    <div class="video-modal-backdrop" id="modal-backdrop"></div>
+    <div class="video-modal-content">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-title">Wedding Highlights Showreel</span>
+        <button class="modal-close" id="modal-close" aria-label="Close video">&times;</button>
+      </div>
+      <div class="video-iframe-wrap">
+        <iframe id="video-iframe" src="" title="Video" allow="autoplay; fullscreen" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="modal-footer-bar">
+        <span class="modal-source-badge" id="modal-source-badge">Google Drive</span>
+        <a id="modal-open-link" href="#" target="_blank" rel="noopener noreferrer" class="modal-open-ext">
+          Open in Drive <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- ══════════════════════════ HERO SECTION ══════════════════════ -->
+    <section id="hero" class="hero-section" aria-label="Hero">
+      <div class="hero-video-bg" aria-hidden="true">
+        <img src="wedding_hero_bg.png" alt="" class="hero-bg-img" />
+        <div class="hero-overlay"></div>
+        <div class="hero-vignette"></div>
+        <div class="lens-flare flare-1" aria-hidden="true"></div>
+        <div class="lens-flare flare-2" aria-hidden="true"></div>
+        <div class="lens-flare flare-3" aria-hidden="true"></div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-eyebrow fade-up delay-1">
+          <span class="eyebrow-line"></span>
+          Mihir Parab
+          <span class="eyebrow-line"></span>
+        </div>
+
+        <h1 class="hero-title fade-up delay-2">
+          <span class="glitch-text" data-text="Illusion Editor">Illusion Editor</span>
+        </h1>
+
+        <p class="hero-subtitle fade-up delay-3">
+          <span id="typewriter-target"></span><span class="typewriter-cursor" aria-hidden="true">|</span>
+        </p>
+
+        <p class="hero-tagline fade-up delay-4">Turning Moments into Cinematic Illusions</p>
+
+        <div class="hero-actions fade-up delay-5">
+          <a href="#showreel" class="btn btn-primary magnetic-btn" id="hero-cta">
+            <span>View My Work</span>
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </a>
+          <a href="#contact" class="btn btn-ghost magnetic-btn">Get In Touch</a>
+        </div>
+
+        <div class="hero-stats fade-up delay-6" aria-label="Quick statistics">
+          <div class="stat-item">
+            <span class="stat-num" data-target="7">0</span><span class="stat-suffix">+</span>
+            <span class="stat-label">Years</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="stat-item">
+            <span class="stat-num" data-target="200">0</span><span class="stat-suffix">+</span>
+            <span class="stat-label">Projects</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="stat-item">
+            <span class="stat-num" data-target="50">0</span><span class="stat-suffix">+</span>
+            <span class="stat-label">Happy Clients</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="stat-item">
+            <span class="stat-num" data-target="4">0</span>
+            <span class="stat-label">Specialties</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-scroll-hint fade-up delay-6" aria-hidden="true">
+        <span>scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════ CINEMATIC MARQUEE ══════════════════════ -->
+    <div class="marquee-section" aria-hidden="true">
+      <div class="marquee-track">
+        <div class="marquee-inner" id="marquee-inner">
+          <span>WEDDING HIGHLIGHT</span><span class="mx">✦</span>
+          <span>DESTINATION WEDDING</span><span class="mx">◆</span>
+          <span>PRE-WEDDING FILM</span><span class="mx">✦</span>
+          <span>ENGAGEMENT CEREMONY</span><span class="mx">◆</span>
+          <span>SANGEET &amp; HALDI</span><span class="mx">✦</span>
+          <span>CINEMATIC TEASER</span><span class="mx">◆</span>
+          <span>ILLUSION EDITOR</span><span class="mx">✦</span>
+          <span>WEDDING HIGHLIGHT</span><span class="mx">◆</span>
+          <span>DESTINATION WEDDING</span><span class="mx">✦</span>
+          <span>PRE-WEDDING FILM</span><span class="mx">◆</span>
+          <span>ENGAGEMENT CEREMONY</span><span class="mx">✦</span>
+          <span>SANGEET &amp; HALDI</span><span class="mx">◆</span>
+          <span>CINEMATIC TEASER</span><span class="mx">✦</span>
+          <span>ILLUSION EDITOR</span><span class="mx">◆</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════ BEST WEDDING WORK ══════════════════ -->
+    <section id="showreel" class="section best-work-section" aria-label="Best Wedding Work">
+      <div class="section-noise" aria-hidden="true"></div>
+
+      <!-- Floating film strip decorations -->
+      <div class="film-strip-left" aria-hidden="true">
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+      </div>
+      <div class="film-strip-right" aria-hidden="true">
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+      </div>
+
+      <div class="container">
+        <div class="section-header reveal-up">
+          <span class="section-eyebrow">Finest Frames</span>
+          <h2 class="section-title">Best <em>Wedding Work</em></h2>
+          <p class="section-desc">Handpicked from hundreds of weddings — these are the moments that define the Illusion Editor style.</p>
+        </div>
+
+        <div class="bw-masonry reveal-up">
+          <!-- 1: Hero (Large square) -->
+          <div class="bw-item item-hero bw-hero-card video-trigger cursor-play"
+               data-drive="1QrDB43thIKH6cMHxFXXSZ1n2w-ogbRIW"
+               data-title="Wedding Highlight Film – Best of 2024">
+            <img src="https://drive.google.com/thumbnail?id=1QrDB43thIKH6cMHxFXXSZ1n2w-ogbRIW&sz=w1280"
+                 alt="Best Wedding Work 2024" class="bw-img"
+                 onerror="this.src='wedding_highlight.png'" />
+            <div class="bw-overlay">
+              <span class="bw-tag w-highlight">🎬 Highlight</span>
+              <h3>Wedding Highlight Film</h3>
+              <p>Cinematic · Full Day</p>
+              <div class="bw-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            </div>
+            <div class="bw-glow-border" aria-hidden="true"></div>
+          </div>
+
+          <!-- 2: Tall -->
+          <div class="bw-item item-tall video-trigger cursor-play"
+               data-drive="1vbX9niuZ4LNTL6e2xXqFMPmkJkQ5lSUn"
+               data-title="Destination Wedding – Palace Film">
+            <img src="https://drive.google.com/thumbnail?id=1vbX9niuZ4LNTL6e2xXqFMPmkJkQ5lSUn&sz=w800"
+                 alt="Destination Wedding" class="bw-img"
+                 onerror="this.src='wedding_destination.png'" />
+            <div class="bw-overlay">
+              <span class="bw-tag w-destination">✈ Destination</span>
+              <h3>Palace Wedding</h3>
+              <p>Udaipur · 2024</p>
+              <div class="bw-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            </div>
+            <div class="bw-glow-border" aria-hidden="true"></div>
+          </div>
+
+          <!-- 3: Box -->
+          <div class="bw-item item-box video-trigger cursor-play"
+               data-drive="18X9ncrUnbyZTb9sxC2wRYWWMqvzsSOwP"
+               data-title="Engagement Cinematic Film">
+            <img src="https://drive.google.com/thumbnail?id=18X9ncrUnbyZTb9sxC2wRYWWMqvzsSOwP&sz=w800"
+                 alt="Engagement Film" class="bw-img"
+                 onerror="this.src='wedding_portfolio_1.png'" />
+            <div class="bw-overlay">
+              <span class="bw-tag w-engagement">💍 Engagement</span>
+              <h3>Engagement Film</h3>
+              <div class="bw-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            </div>
+            <div class="bw-glow-border" aria-hidden="true"></div>
+          </div>
+
+          <!-- 4: Box -->
+          <div class="bw-item item-box video-trigger cursor-play"
+               data-drive="1DhdvkWyULxBdBeT2OwM1jVyWJ4hkGf9C"
+               data-title="Cinematic Teaser">
+            <img src="https://drive.google.com/thumbnail?id=1DhdvkWyULxBdBeT2OwM1jVyWJ4hkGf9C&sz=w800"
+                 alt="Teaser Film" class="bw-img"
+                 onerror="this.src='wedding_teaser.png'" />
+            <div class="bw-overlay">
+              <span class="bw-tag w-teaser">⚡ Teaser</span>
+              <h3>Cinematic Teaser</h3>
+              <div class="bw-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            </div>
+            <div class="bw-glow-border" aria-hidden="true"></div>
+          </div>
+
+          <!-- 5: Wide -->
+          <div class="bw-item item-wide video-trigger cursor-play"
+               data-drive="1t8yotXvpAZqB0YAvdBDLe8uOukW8m0Cc"
+               data-title="Engagement Teaser">
+            <img src="https://drive.google.com/thumbnail?id=1t8yotXvpAZqB0YAvdBDLe8uOukW8m0Cc&sz=w1280"
+                 alt="Engagement Teaser" class="bw-img"
+                 onerror="this.src='wedding_portfolio_2.png'" />
+            <div class="bw-overlay">
+              <span class="bw-tag w-engagement">✨ Pre-Wedding</span>
+              <h3>Enchanting Moments</h3>
+              <p>Engagement & Pre-wedding</p>
+              <div class="bw-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            </div>
+            <div class="bw-glow-border" aria-hidden="true"></div>
+          </div>
+
+        </div><!-- /bw-masonry -->
+
+        <div class="bw-footer reveal-up">
+          <a href="#portfolio" class="btn btn-outline magnetic-btn">View Full Portfolio →</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════ SERVICES SECTION ══════════════════ -->
+    <section id="services" class="section services-section" aria-label="Services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">What I Create</span>
+          <h2 class="section-title">The <em>Craft</em></h2>
+          <p class="section-desc">Every frame tells a story. Every edit breathes life into moments that matter.</p>
+        </div>
+        <div class="services-grid">
+
+          <div class="service-card reveal-up" style="--delay:0s">
+            <div class="service-card-inner">
+              <div class="service-icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="1.5"/><path d="M20 40 Q32 16 44 40" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="32" cy="28" r="4" fill="currentColor" opacity="0.6"/><path d="M16 44 h32" stroke="currentColor" stroke-width="1" opacity="0.4"/></svg>
+              </div>
+              <div class="service-num" aria-hidden="true">01</div>
+              <h3 class="service-title">Wedding Films</h3>
+              <p class="service-desc-text">Timeless cinematic narratives of your most cherished day. From tears at the vows to the last dance — every emotion immortalised.</p>
+              <ul class="service-features" aria-label="Wedding films features">
+                <li>Cinematic Color Grading</li>
+                <li>Emotional Sound Design</li>
+                <li>Highlight + Full Edit</li>
+                <li>4K Delivery</li>
+              </ul>
+              <a href="#contact" class="service-link magnetic-btn">Enquire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+            <div class="service-glow" aria-hidden="true"></div>
+            <div class="service-border-anim" aria-hidden="true"></div>
+          </div>
+
+          <div class="service-card reveal-up" style="--delay:0.12s">
+            <div class="service-card-inner">
+              <div class="service-icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none"><rect x="8" y="18" width="48" height="34" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 26h48" stroke="currentColor" stroke-width="1" opacity="0.5"/><circle cx="20" cy="22" r="2" fill="currentColor" opacity="0.6"/><path d="M28 38 l8-5 l8 5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+              </div>
+              <div class="service-num" aria-hidden="true">02</div>
+              <h3 class="service-title">Commercial Reels</h3>
+              <p class="service-desc-text">High-impact product videos that sell. Dynamic cuts, luxury aesthetics and visual effects that make your brand unforgettable.</p>
+              <ul class="service-features" aria-label="Commercial reels features">
+                <li>Product Showcase Videos</li>
+                <li>Brand Story Reels</li>
+                <li>Social Media Optimized</li>
+                <li>VFX & Motion Graphics</li>
+              </ul>
+              <a href="#contact" class="service-link magnetic-btn">Enquire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+            <div class="service-glow" aria-hidden="true"></div>
+            <div class="service-border-anim" aria-hidden="true"></div>
+          </div>
+
+          <div class="service-card reveal-up" style="--delay:0.24s">
+            <div class="service-card-inner">
+              <div class="service-icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="28" rx="12" ry="16" stroke="currentColor" stroke-width="1.5"/><path d="M20 48 Q32 42 44 48" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+              </div>
+              <div class="service-num" aria-hidden="true">03</div>
+              <h3 class="service-title">Model Edits</h3>
+              <p class="service-desc-text">Editorial fashion and portfolio reels crafted to showcase your unique presence. Bold, striking and portfolio-defining.</p>
+              <ul class="service-features" aria-label="Model edits features">
+                <li>Editorial Style Cuts</li>
+                <li>Dramatic Color Looks</li>
+                <li>Multi-Location Edits</li>
+                <li>Instagram / YouTube Ready</li>
+              </ul>
+              <a href="#contact" class="service-link magnetic-btn">Enquire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+            <div class="service-glow" aria-hidden="true"></div>
+            <div class="service-border-anim" aria-hidden="true"></div>
+          </div>
+
+          <div class="service-card reveal-up" style="--delay:0.36s">
+            <div class="service-card-inner">
+              <div class="service-icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none"><path d="M8 48 L20 28 L32 38 L44 22 L56 32" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M8 52 h48" stroke="currentColor" stroke-width="1" opacity="0.3"/><circle cx="20" cy="28" r="2.5" fill="currentColor" opacity="0.6"/><circle cx="44" cy="22" r="2.5" fill="currentColor" opacity="0.6"/></svg>
+              </div>
+              <div class="service-num" aria-hidden="true">04</div>
+              <h3 class="service-title">Event Coverage</h3>
+              <p class="service-desc-text">Corporate galas, product launches, concerts and cultural events — transformed into dynamic highlight reels that capture the energy.</p>
+              <ul class="service-features" aria-label="Event coverage features">
+                <li>Same-Day Edit Available</li>
+                <li>Multi-Camera Editing</li>
+                <li>Dynamic Highlight Reels</li>
+                <li>Full Event Documentaries</li>
+              </ul>
+              <a href="#contact" class="service-link magnetic-btn">Enquire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+            <div class="service-glow" aria-hidden="true"></div>
+            <div class="service-border-anim" aria-hidden="true"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════ PROCESS SECTION ══════════════════ -->
+    <section id="process" class="section process-section" aria-label="My Process">
+      <div class="container">
+        <div class="section-header reveal-up">
+          <span class="section-eyebrow">How It Works</span>
+          <h2 class="section-title">The <em>Process</em></h2>
+          <p class="section-desc">From first contact to final delivery — every step crafted with intentionality and cinematic precision.</p>
+        </div>
+        <div class="process-steps">
+
+          <div class="process-step reveal-up" style="--delay:0s">
+            <div class="process-step-num">01</div>
+            <div class="process-step-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M24 4C12.954 4 4 12.954 4 24s8.954 20 20 20 20-8.954 20-20S35.046 4 24 4z" stroke="currentColor" stroke-width="1.5"/><path d="M16 24l6 6 10-12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="process-step-content">
+              <h3>Discovery Call</h3>
+              <p>We connect over WhatsApp or a call to understand your vision, event details and what emotions you want immortalised.</p>
+            </div>
+            <div class="process-connector" aria-hidden="true"></div>
+          </div>
+
+          <div class="process-step reveal-up" style="--delay:0.1s">
+            <div class="process-step-num">02</div>
+            <div class="process-step-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="10" width="32" height="28" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M16 22h16M16 28h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 16h32" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>
+            </div>
+            <div class="process-step-content">
+              <h3>Proposal & Brief</h3>
+              <p>I prepare a tailored creative brief and a transparent quote — no hidden charges. You approve every element before we begin.</p>
+            </div>
+            <div class="process-connector" aria-hidden="true"></div>
+          </div>
+
+          <div class="process-step reveal-up" style="--delay:0.2s">
+            <div class="process-step-num">03</div>
+            <div class="process-step-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><rect x="6" y="14" width="36" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M20 26l6-4 6 4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><circle cx="13" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <div class="process-step-content">
+              <h3>Raw Footage Review</h3>
+              <p>All your footage is shared, organised and reviewed. I select the most powerful moments — the tears, the laughter, the glances.</p>
+            </div>
+            <div class="process-connector" aria-hidden="true"></div>
+          </div>
+
+          <div class="process-step reveal-up" style="--delay:0.3s">
+            <div class="process-step-num">04</div>
+            <div class="process-step-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M8 36L24 12l16 24H8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 28h12M24 20v8" stroke="currentColor" stroke-width="1" opacity=".5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="process-step-content">
+              <h3>Cinematic Edit</h3>
+              <p>Color grading, sound design, music sync and motion effects are applied — transforming footage into a narrative masterpiece.</p>
+            </div>
+            <div class="process-connector" aria-hidden="true"></div>
+          </div>
+
+          <div class="process-step reveal-up" style="--delay:0.4s">
+            <div class="process-step-num">05</div>
+            <div class="process-step-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M24 8v24M16 24l8 8 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 38h28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="process-step-content">
+              <h3>Review & Revisions</h3>
+              <p>You receive a private preview link. One or two rounds of revisions are included — your satisfaction is non-negotiable.</p>
+            </div>
+            <div class="process-connector" aria-hidden="true"></div>
+          </div>
+
+          <div class="process-step reveal-up" style="--delay:0.5s">
+            <div class="process-step-num">06</div>
+            <div class="process-step-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="1.5"/><path d="M20 24l3 3 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="process-step-content">
+              <h3>4K Final Delivery</h3>
+              <p>Delivered in 4K via Google Drive. High-resolution, ready to treasure, share, and re-live for decades to come.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════ ABOUT SECTION ══════════════════════ -->
+    <section id="about" class="section about-section" aria-label="About Mihir Parab">
+      <div class="container about-container">
+        <div class="about-image-col reveal-left">
+          <div class="about-img-frame">
+            <img src="about_mihir.png" alt="Mihir Parab editing a cinematic wedding film" class="about-img" loading="lazy" />
+            <div class="about-img-overlay" aria-hidden="true"></div>
+            <div class="about-img-border" aria-hidden="true"></div>
+            <div class="about-img-corner tl" aria-hidden="true"></div>
+            <div class="about-img-corner tr" aria-hidden="true"></div>
+            <div class="about-img-corner bl" aria-hidden="true"></div>
+            <div class="about-img-corner br" aria-hidden="true"></div>
+          </div>
+          <div class="about-badge">
+            <span class="badge-num">6+</span>
+            <span class="badge-text">Years of<br/>Cinematic Editing</span>
+          </div>
+        </div>
+
+        <div class="about-content-col reveal-right">
+          <span class="section-eyebrow">The Storyteller</span>
+          <h2 class="section-title">Meet <em>Mihir Parab</em></h2>
+          <p class="about-para">I'm a passionate video editor who believes every couple, every product, every moment deserves to be told as a cinematic experience — not just recorded, but <strong>felt</strong>.</p>
+          <p class="about-para">What started as a hobby in 2018 became a craft, and that craft became a calling. Today, I specialize in wedding films that make you relive every heartbeat of your most special day — long after it's over.</p>
+
+          <!-- Skills bar -->
+          <div class="skills-wrap">
+            <div class="skill-row">
+              <span class="skill-name">Color Grading</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="95"></div></div>
+              <span class="skill-pct">95%</span>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Wedding Films</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="98"></div></div>
+              <span class="skill-pct">98%</span>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Motion Graphics</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+              <span class="skill-pct">85%</span>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Sound Design</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+              <span class="skill-pct">90%</span>
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div class="timeline" aria-label="Career timeline">
+            <div class="timeline-item" role="listitem">
+              <div class="timeline-dot" aria-hidden="true"><div class="timeline-dot-inner"></div></div>
+              <div class="timeline-content">
+                <span class="timeline-year">2018</span>
+                <h4 class="timeline-title">The Beginning</h4>
+                <p class="timeline-desc">Discovered the art of video editing. Developed a signature cinematic style.</p>
+              </div>
+            </div>
+            <div class="timeline-item" role="listitem">
+              <div class="timeline-dot" aria-hidden="true"><div class="timeline-dot-inner"></div></div>
+              <div class="timeline-content">
+                <span class="timeline-year">2020</span>
+                <h4 class="timeline-title">Going Professional</h4>
+                <p class="timeline-desc">Expanded into commercials and model reels. Mastered color grading and motion design.</p>
+              </div>
+            </div>
+            <div class="timeline-item" role="listitem">
+              <div class="timeline-dot gold" aria-hidden="true"><div class="timeline-dot-inner"></div></div>
+              <div class="timeline-content">
+                <span class="timeline-year">2021</span>
+                <h4 class="timeline-title">Wedding Specialist</h4>
+                <p class="timeline-desc">Found my true calling — crafting emotional, story-driven wedding films across India.</p>
+              </div>
+            </div>
+            <div class="timeline-item" role="listitem">
+              <div class="timeline-dot purple" aria-hidden="true"><div class="timeline-dot-inner"></div></div>
+              <div class="timeline-content">
+                <span class="timeline-year">Now</span>
+                <h4 class="timeline-title">Illusion Editor</h4>
+                <p class="timeline-desc">200+ projects, hundreds of tears of joy, thousands of frames of pure emotion.</p>
+              </div>
+            </div>
+          </div>
+
+          <a href="#contact" class="btn btn-primary magnetic-btn" style="margin-top:2rem">Start Your Story</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════ PORTFOLIO SECTION ══════════════════ -->
+    <section id="portfolio" class="section portfolio-section" aria-label="Portfolio Gallery">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Gallery</span>
+          <h2 class="section-title">The <em>Portfolio</em></h2>
+          <p class="section-desc">Filter through my work — each frame a world, each story a universe.</p>
+        </div>
+
+        <!-- Main Category Tabs -->
+        <div class="portfolio-tabs" role="tablist" aria-label="Portfolio categories" id="main-tabs">
+          <button class="tab-btn active" role="tab" aria-selected="true"  data-filter="all"       id="tab-all">All Work</button>
+          <button class="tab-btn"        role="tab" aria-selected="false" data-filter="wedding"    id="tab-wedding">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><path d="M8 14s-6-4-6-8a6 6 0 0112 0c0 4-6 8-6 8z"/></svg>
+            Weddings
+          </button>
+          <button class="tab-btn"        role="tab" aria-selected="false" data-filter="commercial" id="tab-commercial">Commercial</button>
+          <button class="tab-btn"        role="tab" aria-selected="false" data-filter="model"      id="tab-model">Models</button>
+          <button class="tab-btn"        role="tab" aria-selected="false" data-filter="event"      id="tab-event">Events</button>
+        </div>
+
+        <!-- Wedding Sub-Tabs -->
+        <div class="wedding-subtabs" id="wedding-subtabs" role="tablist" aria-label="Wedding categories" hidden>
+          <button class="subtab-btn active" role="tab" aria-selected="true"  data-wedding="all"         id="sw-all">✦ All Weddings</button>
+          <button class="subtab-btn"        role="tab" aria-selected="false" data-wedding="highlight"   id="sw-highlight"
+            data-desc="Full-day wedding coverage edited into a cinematic highlights reel · 4 films">
+            🎬 Single Day Highlight
+          </button>
+          <button class="subtab-btn"        role="tab" aria-selected="false" data-wedding="destination" id="sw-destination"
+            data-desc="Weddings at dream destinations — palace, beach &amp; heritage venues · 3 films">
+            ✈ Destination Wedding
+          </button>
+          <button class="subtab-btn"        role="tab" aria-selected="false" data-wedding="prewedding"  id="sw-prewedding"
+            data-desc="Romantic pre-wedding films shot at beautiful outdoor locations · 1 film">
+            💛 Pre-Wedding
+          </button>
+          <button class="subtab-btn"        role="tab" aria-selected="false" data-wedding="engagement"  id="sw-engagement"
+            data-desc="Intimate engagement ceremony films — captured with emotion &amp; elegance · 4 films">
+            💍 Engagement
+          </button>
+          <button class="subtab-btn"        role="tab" aria-selected="false" data-wedding="teaser"      id="sw-teaser"
+            data-desc="Short 60-90 second dramatic teasers built for social media impact · 3 films">
+            ⚡ Wedding Teaser
+          </button>
+          <button class="subtab-btn"        role="tab" aria-selected="false" data-wedding="sangeet"     id="sw-sangeet"
+            data-desc="High-energy Sangeet &amp; Haldi ceremony reels — emotion, dance &amp; tradition captured in every frame">
+            🎶 Sangeet / Haldi
+          </button>
+        </div>
+
+        <!-- Sub-tab description strip -->
+        <div class="subtab-desc" id="subtab-desc" hidden></div>
+
+        <!-- ═══════════ PORTFOLIO GRID ═══════════ -->
+        <div class="portfolio-grid" id="portfolio-grid" role="tabpanel">
+        </div><!-- /portfolio-grid -->
+      </div>
+    </section>
+
+    <!-- ══════════════════════════ TESTIMONIALS SECTION ══════════════ -->
+    <section id="testimonials" class="section testimonials-section" aria-label="Client Testimonials">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Client Experience</span>
+          <h2 class="section-title">Words from the <em>Heart</em></h2>
+          <p class="section-desc">Stories told by those whose stories I've told.</p>
+        </div>
+
+        <div class="testimonials-track-wrap" aria-live="polite">
+          <div class="testimonials-track" id="testimonials-track">
+
+            <blockquote class="testimonial-card">
+              <div class="quote-mark" aria-hidden="true">"</div>
+              <p class="testimonial-text">Mihir captured our wedding in a way we never thought possible. Every time we watch our film, we fall in love all over again. It's not a video — it's an emotion.</p>
+              <footer class="testimonial-author">
+                <div class="author-avatar" aria-hidden="true">P</div>
+                <div>
+                  <cite class="author-name">Priya &amp; Arjun Sharma</cite>
+                  <span class="author-event">Wedding Film · Goa, 2023</span>
+                </div>
+                <div class="testimonial-stars" aria-label="5 star rating">★★★★★</div>
+              </footer>
+            </blockquote>
+
+            <blockquote class="testimonial-card">
+              <div class="quote-mark" aria-hidden="true">"</div>
+              <p class="testimonial-text">He doesn't just edit videos. He sculpts feelings. Our product reel drove more conversions in 3 days than all previous content combined. Absolute genius.</p>
+              <footer class="testimonial-author">
+                <div class="author-avatar" aria-hidden="true">S</div>
+                <div>
+                  <cite class="author-name">Sneha Kapoor</cite>
+                  <span class="author-event">Brand Director · Aurora Cosmetics</span>
+                </div>
+                <div class="testimonial-stars" aria-label="5 star rating">★★★★★</div>
+              </footer>
+            </blockquote>
+
+            <blockquote class="testimonial-card">
+              <div class="quote-mark" aria-hidden="true">"</div>
+              <p class="testimonial-text">My model portfolio reel completely transformed how agencies see me. The cinematic quality is unmatched. Mihir has a rare eye for beauty and drama.</p>
+              <footer class="testimonial-author">
+                <div class="author-avatar" aria-hidden="true">N</div>
+                <div>
+                  <cite class="author-name">Natasha Verma</cite>
+                  <span class="author-event">Fashion Model · Mumbai</span>
+                </div>
+                <div class="testimonial-stars" aria-label="5 star rating">★★★★★</div>
+              </footer>
+            </blockquote>
+
+            <blockquote class="testimonial-card">
+              <div class="quote-mark" aria-hidden="true">"</div>
+              <p class="testimonial-text">Our annual gala highlight reel was breathtaking. Mihir delivered same-day — edited 6 hours into a stunning 4-minute story. Unbelievable talent.</p>
+              <footer class="testimonial-author">
+                <div class="author-avatar" aria-hidden="true">R</div>
+                <div>
+                  <cite class="author-name">Rahul Mehta</cite>
+                  <span class="author-event">Event Director · Global Partners Corp</span>
+                </div>
+                <div class="testimonial-stars" aria-label="5 star rating">★★★★★</div>
+              </footer>
+            </blockquote>
+
+          </div>
+        </div>
+
+        <!-- Progress bar for auto-slide -->
+        <div class="testi-progress-wrap" aria-hidden="true">
+          <div class="testi-progress-bar" id="testi-progress"></div>
+        </div>
+
+        <div class="testimonial-nav" role="group" aria-label="Testimonial navigation">
+          <button class="testi-arrow" id="testi-prev" aria-label="Previous testimonial">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          </button>
+          <div class="testi-dots" id="testi-dots" role="group" aria-label="Testimonial indicators"></div>
+          <button class="testi-arrow" id="testi-next" aria-label="Next testimonial">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════ CONTACT SECTION ══════════════════ -->
+    <section id="contact" class="section contact-section" aria-label="Contact">
+      <div class="contact-bg-img" aria-hidden="true">
+        <img src="wedding_portfolio_2.png" alt="" loading="lazy" />
+        <div class="contact-bg-overlay"></div>
+      </div>
+      <div class="container contact-container">
+        <div class="contact-left reveal-left">
+          <span class="section-eyebrow">Start a Conversation</span>
+          <h2 class="section-title">Let's Create<br/>Something <em>Beautiful</em></h2>
+          <p class="contact-desc">Ready to turn your moments into cinematic illusions? Reach out — I'd love to hear your story.</p>
+          <div class="contact-links">
+            <a href="https://wa.me/919326517812" class="contact-link-item whatsapp magnetic-btn" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <span>Chat on WhatsApp</span>
+              <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="https://instagram.com/illusion.editor" class="contact-link-item instagram magnetic-btn" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              <span>@illusion.editor</span>
+              <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="https://youtube.com/@illusioneditor" class="contact-link-item youtube magnetic-btn" target="_blank" rel="noopener noreferrer" aria-label="Subscribe on YouTube">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              <span>YouTube Channel</span>
+              <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <form class="contact-form reveal-right" id="contact-form" novalidate aria-label="Contact form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cf-name">Your Name</label>
+              <input type="text" id="cf-name" name="name" placeholder="Priya Sharma" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="cf-email">Email Address</label>
+              <input type="email" id="cf-email" name="email" placeholder="priya@example.com" required autocomplete="email" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cf-service">Service Required</label>
+            <select id="cf-service" name="service" required>
+              <option value="" disabled selected>Select a service</option>
+              <option value="wedding">Wedding Film</option>
+              <option value="commercial">Commercial Reel</option>
+              <option value="model">Model Edit</option>
+              <option value="event">Event Coverage</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cf-date">Event Date (if applicable)</label>
+            <input type="date" id="cf-date" name="date" />
+          </div>
+          <div class="form-group">
+            <label for="cf-message">Tell Me Your Story</label>
+            <textarea id="cf-message" name="message" rows="4" placeholder="Share details about your event, vision, or project..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full magnetic-btn" id="cf-submit">
+            <span>Send My Story</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+          <div class="form-success" id="form-success" hidden role="alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Message sent! I'll be in touch soon.
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════ MEGA CTA ══════════════════════════ -->
+  <section class="mega-cta-section reveal-up" aria-label="Start your project">
+    <a href="#contact" class="mega-cta-link cursor-play" aria-label="Let's Talk">
+      <div class="mega-text-wrap">
+        <h2 class="mega-text">LET'S<br>TALK</h2>
+      </div>
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+    <div class="footer-grain" aria-hidden="true"></div>
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <img src="logo.png" alt="Illusion Editor Logo" class="footer-logo-img">
+        <p class="footer-tagline">Turning Moments into Cinematic Illusions</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="#showreel">Showreel</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="footer-socials" aria-label="Social media links">
+        <a href="https://instagram.com/illusion.editor" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+        <a href="https://youtube.com/@illusioneditor" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+        <a href="https://wa.me/919326517812" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© <span id="footer-year"></span> Illusion Editor · Mihir Parab · All Rights Reserved</p>
+      <p class="footer-crafted">Crafted with <span aria-label="love">♥</span> &amp; Cinematic Passion</p>
+    </div>
+  </footer>
+
+  <!-- ── FLOATING ACTION BUTTONS ─────────────────────────────────── -->
+  <a href="#hero" class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+  </a>
+
+  <a href="#contact" class="floating-cta" aria-label="Quick Contact">
+    <span class="floating-cta-text">Book Now</span>
+    <span class="pulse-ring"></span>
+  </a>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/919326517812" class="wa-float" target="_blank" rel="noopener noreferrer" aria-label="Quick Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <span class="wa-status">Quick Chat</span>
+  </a>
+
+  <script src="script.js"></script>
+</body>
+</html>

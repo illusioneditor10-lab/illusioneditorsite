@@ -31,10 +31,13 @@ if database_url and (database_url.startswith("postgres") or "supabase" in databa
             database_url = "postgresql://" + database_url
 
     try:
-        # 3. Manual Extraction (More resilient than urlparse for typos)
+        # 3. Manual Extraction (Ultra-resilient version)
         # Format: postgresql://user:pwd@host:port/path
         clean = database_url.split("://")[-1]
-        creds, rest = clean.split("@", 1)
+        
+        # We use rsplit to ensure the LAST '@' is the host separator
+        creds, rest = clean.rsplit("@", 1)
+        
         user_pwd = creds.split(":", 1)
         user = user_pwd[0].strip()
         pwd = user_pwd[1].strip() if len(user_pwd) > 1 else ""

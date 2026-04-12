@@ -15,8 +15,8 @@ def migrate():
             with open(settings_path, 'r') as f:
                 data = json.load(f)
                 for k, v in data.items():
-                    if not Setting.query.get(k):
-                        db.session.add(Setting(key=k, value=str(v)))
+                    if not db.session.get(Setting, k):
+                        db.session.add(Setting(s_key=k, s_value=str(v)))
             print("✅ Settings migrated.")
         
         # 2. Migrate Portfolio

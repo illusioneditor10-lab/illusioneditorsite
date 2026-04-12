@@ -30,7 +30,7 @@ def migrate():
                             id=i['id'], 
                             title=i.get('title'), 
                             category=i.get('category'),
-                            subcategory=i.get('subcategory') or i.get('subCategory'), 
+                            subCategory=i.get('subcategory') or i.get('subCategory'), 
                             thumbnail=i.get('thumbnail'),
                             videoUrl=i.get('videoUrl'), 
                             ytId=i.get('ytId'), 

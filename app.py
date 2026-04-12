@@ -30,18 +30,16 @@ if database_url and "supabase" in database_url:
             database_url = "postgresql://" + database_url
 
     try:
-        # 3. Parse and rebuild to enforce safe ports and pgbouncer
+        # 3. Parse and rebuild to enforce safe ports and SSL
         u = urlparse(database_url)
         user = u.username if u.username else "postgres"
         pwd = u.password if u.password else ""
         host = u.hostname if u.hostname else ""
         port = 6543 # Force the reliable pooler port
         path = u.path if u.path else "/postgres"
-        query = u.query
-        if "pgbouncer=true" not in query:
-            query = (query + "&" if query else "") + "pgbouncer=true"
-            
-        database_url = f"postgresql://{user}:{pwd}@{host}:{port}{path}?{query}"
+        
+        # Use sslmode=require instead of pgbouncer
+        database_url = f"postgresql://{user}:{pwd}@{host}:{port}{path}?sslmode=require"
         print("REDACTED: Sanitized Supabase URL for Render.")
     except Exception as e:
         print(f"REDACTED: URL Cleanup failed: {str(e)}")

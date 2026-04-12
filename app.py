@@ -19,8 +19,9 @@ from urllib.parse import urlparse
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
 
 if database_url and (database_url.startswith("postgres") or "supabase" in database_url):
-    # 1. CLEAN FIRST (Remove stray brackets and spaces)
-    database_url = database_url.replace("[", "").replace("]", "").strip()
+    # 1. CLEAN FIRST (Remove stray brackets, double symbols, and spaces)
+    database_url = database_url.replace("[", "").replace("]", "")
+    database_url = database_url.replace("@@", "@").replace("::", ":").strip()
     
     # 2. Normalize scheme
     if database_url.startswith("postgres://"):

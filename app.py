@@ -14,37 +14,42 @@ CORS(app)
 # --- ENVIRONMENT CONFIGURATION ---
 # These will be set on Render dashboard
 # Render provides postgres:// but SQLAlchemy requires postgresql://
-import re
+from urllib.parse import urlparse, urlunparse
+
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
 
 if database_url and "supabase" in database_url:
-    # 1. Ensure postgresql:// prefix
+    # 1. Normalize scheme to postgresql
     if database_url.startswith("postgres://"):
-        database_url = database_url.replace("postgres://", "postgresql://", 1)
-    
-    # 2. Extract components using regex to strip stray brackets/chars
-    # Pattern looks for: postgresql://user:pass@host:port/dbname
-    pattern = r"postgresql://([^:]+):([^@]+)@([^:/]+):?(\d+)?/(.+)"
-    match = re.search(pattern, database_url)
-    
-    if match:
-        user, pwd, host, port, dbname = match.groups()
-        # Clean each part (remove [ ] and whitespace)
-        user = user.replace("[", "").replace("]", "").strip()
-        pwd = pwd.replace("[", "").replace("]", "").strip()
-        host = host.replace("[", "").replace("]", "").strip()
-        if not port: port = "6543" # Default to pooler port
+        database_url = "postgresql" + database_url[8:]
+    elif not database_url.startswith("postgresql://"):
+        # Handle cases where user might have accidentally removed the scheme
+        if "://" not in database_url:
+            database_url = "postgresql://" + database_url
+
+    try:
+        # 2. Parse using standard library
+        u = urlparse(database_url)
         
-        # Ensure it uses port 6543 and pgbouncer for Render
-        if port == "5432": port = "6543"
+        # 3. Clean each component (strip brackets and spaces)
+        user = u.username.replace("[", "").replace("]", "").strip() if u.username else "postgres"
+        pwd = u.password.replace("[", "").replace("]", "").strip() if u.password else ""
+        host = u.hostname.replace("[", "").replace("]", "").strip() if u.hostname else ""
         
-        # Build the final clean URL
-        database_url = f"postgresql://{user}:{pwd}@{host}:{port}/{dbname}"
-        if "pgbouncer" not in database_url:
-            separator = "&" if "?" in database_url else "?"
-            database_url += f"{separator}pgbouncer=true"
+        # Enforce pooler port 6543 for Render + Supabase
+        port = 6543
         
-        print("REDACTED: Super-Sanitized Supabase URL for Render.")
+        # Rebuild path and query
+        path = u.path if u.path else "/postgres"
+        query = u.query
+        if "pgbouncer=true" not in query:
+            query = (query + "&" if query else "") + "pgbouncer=true"
+            
+        # 4. Reconstruct clean URL
+        database_url = f"postgresql://{user}:{pwd}@{host}:{port}{path}?{query}"
+        print("REDACTED: Standardized Supabase URL for Render.")
+    except Exception as e:
+        print(f"REDACTED: Failed to standardize URL: {str(e)}")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

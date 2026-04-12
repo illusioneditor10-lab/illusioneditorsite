@@ -15,8 +15,16 @@ CORS(app)
 # These will be set on Render dashboard
 # Render provides postgres:// but SQLAlchemy requires postgresql://
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
-if database_url.startswith("postgres://"):
+if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+# Auto-Fix for Supabase + Render IPv6 Network Issues
+if database_url and "supabase.co:5432" in database_url:
+    database_url = database_url.replace(":5432", ":6543")
+    if "pgbouncer" not in database_url:
+        separator = "&" if "?" in database_url else "?"
+        database_url += f"{separator}pgbouncer=true"
+    print("REDACTED: Auto-switched Supabase to Port 6543 for Render compatibility.")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

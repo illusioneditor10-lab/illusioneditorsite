@@ -189,7 +189,7 @@ function createItemCard(item, mini = false) {
     if (thumbId) {
         thumbUrl = (thumbId.startsWith('http') || thumbId.startsWith('uploads/')) 
             ? thumbId 
-            : `https://drive.google.com/uc?export=view&id=${thumbId}`;
+            : `https://drive.google.com/thumbnail?id=${thumbId}&sz=w800`;
     }
 
     div.innerHTML = `

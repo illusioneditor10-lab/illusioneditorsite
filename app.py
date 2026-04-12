@@ -31,19 +31,26 @@ if database_url and (database_url.startswith("postgres") or "supabase" in databa
             database_url = "postgresql://" + database_url
 
     try:
-        # 3. Parse and rebuild to enforce safe ports and SSL
-        u = urlparse(database_url)
-        user = u.username if u.username else "postgres"
-        pwd = u.password if u.password else ""
-        host = u.hostname if u.hostname else ""
-        port = 6543 # Force the reliable pooler port
-        path = u.path if u.path else "/postgres"
+        # 3. Manual Extraction (More resilient than urlparse for typos)
+        # Format: postgresql://user:pwd@host:port/path
+        clean = database_url.split("://")[-1]
+        creds, rest = clean.split("@", 1)
+        user_pwd = creds.split(":", 1)
+        user = user_pwd[0].strip()
+        pwd = user_pwd[1].strip() if len(user_pwd) > 1 else ""
         
-        # Use sslmode=require instead of pgbouncer
-        database_url = f"postgresql://{user}:{pwd}@{host}:{port}{path}?sslmode=require"
-        print("REDACTED: Sanitized Supabase URL for Render.")
+        # Extract host and path
+        host_port_path = rest.split("/", 1)
+        host_port = host_port_path[0].split(":", 1)
+        host = host_port[0].replace("[", "").replace("]", "").strip()
+        path = host_port_path[1] if len(host_port_path) > 1 else "postgres"
+        if "?" in path: path = path.split("?")[0]
+        
+        # 4. Rebuild perfectly
+        database_url = f"postgresql://{user}:{pwd}@{host}:6543/{path}?sslmode=require"
+        print(f"REDACTED: Connected to host {host} on port 6543")
     except Exception as e:
-        print(f"REDACTED: URL Cleanup failed: {str(e)}")
+        print(f"REDACTED: Manual URL cleanup failed: {str(e)}")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

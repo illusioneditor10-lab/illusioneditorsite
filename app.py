@@ -19,7 +19,7 @@ if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
 # Auto-Fix for Supabase + Render IPv6 Network Issues
-if database_url and "supabase.co:5432" in database_url:
+if database_url and (":5432" in database_url) and ("supabase.co" in database_url or "supabase.com" in database_url):
     database_url = database_url.replace(":5432", ":6543")
     if "pgbouncer" not in database_url:
         separator = "&" if "?" in database_url else "?"

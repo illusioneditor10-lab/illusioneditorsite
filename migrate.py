@@ -27,10 +27,16 @@ def migrate():
                 for i in items:
                     if not PortfolioItem.query.get(i['id']):
                         item = PortfolioItem(
-                            id=i['id'], title=i.get('title'), category=i.get('category'),
-                            subCategory=i.get('subCategory'), thumbnail=i.get('thumbnail'),
-                            videoUrl=i.get('videoUrl'), ytId=i.get('ytId'), driveId=i.get('driveId'),
-                            description=i.get('description'), date=i.get('date')
+                            id=i['id'], 
+                            title=i.get('title'), 
+                            category=i.get('category'),
+                            subcategory=i.get('subcategory') or i.get('subCategory'), 
+                            thumbnail=i.get('thumbnail'),
+                            videoUrl=i.get('videoUrl'), 
+                            ytId=i.get('ytId'), 
+                            driveId=i.get('driveId'),
+                            description=i.get('desc') or i.get('description'), 
+                            date=i.get('date') or '2024'
                         )
                         db.session.add(item)
             print(f"✅ {len(items)} Portfolio items migrated.")

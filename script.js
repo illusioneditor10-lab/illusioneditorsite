@@ -507,7 +507,7 @@ const qsa = (s, r = document) => [...r.querySelectorAll(s)];
          const tagLabel = d.subcategory ? d.subcategory.charAt(0).toUpperCase() + d.subcategory.slice(1) : d.category;
 
          div.innerHTML = `
-            <img src="https://drive.google.com/uc?export=view&id=${d.thumbnail || d.driveId}" alt="${d.title}" loading="lazy"/>
+            <img src="https://drive.google.com/thumbnail?id=${d.thumbnail || d.driveId}&sz=w800" alt="${d.title}" loading="lazy" onerror="this.src='wedding_highlight.png'"/>
             <div class="portfolio-item-overlay">
               <div class="portfolio-item-info">
                 <span class="pf-tag ${tagClass}">${tagIcon} ${tagLabel}</span>

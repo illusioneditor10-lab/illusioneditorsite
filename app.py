@@ -38,6 +38,9 @@ if database_url and (database_url.startswith("postgres") or "supabase" in databa
         # We use rsplit to ensure the LAST '@' is the host separator
         creds, rest = clean.rsplit("@", 1)
         
+        # Strip any accidental double separators (like @@ or :]@)
+        creds = creds.rstrip("@").rstrip(":")
+        
         user_pwd = creds.split(":", 1)
         user = user_pwd[0].strip()
         pwd = user_pwd[1].strip() if len(user_pwd) > 1 else ""

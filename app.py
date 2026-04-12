@@ -12,6 +12,7 @@ app = Flask(__name__, static_url_path='', static_folder='.')
 CORS(app)
 
 # --- ENVIRONMENT CONFIGURATION ---
+print("VERSION: 3.0 - Ultra Sanitizer Active")
 # These will be set on Render dashboard
 # Render provides postgres:// but SQLAlchemy requires postgresql://
 from urllib.parse import urlparse

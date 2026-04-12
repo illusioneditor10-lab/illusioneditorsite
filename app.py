@@ -18,6 +18,10 @@ database_url = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
 if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
+# Bracket Cleaner (Fixes common [PASSWORD] copy-paste error)
+if database_url:
+    database_url = database_url.replace("[", "").replace("]", "")
+
 # Auto-Fix for Supabase + Render IPv6 Network Issues
 if database_url and (":5432" in database_url) and ("supabase.co" in database_url or "supabase.com" in database_url):
     database_url = database_url.replace(":5432", ":6543")
